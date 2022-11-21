@@ -629,10 +629,12 @@ public class MedicamentController {
             availabilities.addAll(medicamentAvailabilityRepository.findByMedicamentDosage(medicamentDosage));
         }
 
-        Double minPrice = availabilities.stream()
+
+        Double minPrice = 0.0;
+        if (availabilities.size() > 0)
+            minPrice = Collections.min(availabilities.stream()
                 .map(MedicamentAvailability::getPrice)
-                .max(Comparator.comparingDouble(x -> x))
-                .get();
+                .collect(Collectors.toList()));
 
         int pharmacyCount = availabilities.size();
 
