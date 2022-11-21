@@ -1,7 +1,7 @@
 # Apteka
 ## Как запустить
 - Клонировать репозиторий
-- Создать БД с именем Apteka в Postgres
+- Создать БД с именем Apteki в Postgres
 - Отредактировать файл application.properties и вставить туда свои логин и пароль
 ```
 spring.datasource.username = postgres
