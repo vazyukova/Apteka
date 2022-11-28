@@ -1,5 +1,6 @@
 package com.example.apteki.controller;
 
+import com.example.apteki.ImageEncoder;
 import com.example.apteki.model.*;
 import com.example.apteki.payload.MedicamentInfo;
 import com.example.apteki.payload.SearchRequest;
@@ -25,6 +26,7 @@ public class MedicamentController {
     MedicamentDosageRepository medicamentDosageRepository;
     PharmacyRepository pharmacyRepository;
     PharmacyAddressRepository pharmacyAddressRepository;
+    MedicamentImageRepository medicamentImageRepository;
 
     public MedicamentController(CategoryRepository categoryRepository,
             ManufacturerRepository manufacturerRepository,
@@ -34,7 +36,8 @@ public class MedicamentController {
             MedicamentCountRepository medicamentCountRepository,
             MedicamentDosageRepository medicamentDosageRepository,
             PharmacyRepository pharmacyRepository,
-            PharmacyAddressRepository pharmacyAddressRepository)
+            PharmacyAddressRepository pharmacyAddressRepository,
+            MedicamentImageRepository medicamentImageRepository)
     {
         this.categoryRepository = categoryRepository;
         this.manufacturerRepository = manufacturerRepository;
@@ -45,6 +48,7 @@ public class MedicamentController {
         this.medicamentDosageRepository = medicamentDosageRepository;
         this.pharmacyRepository = pharmacyRepository;
         this.pharmacyAddressRepository = pharmacyAddressRepository;
+        this.medicamentImageRepository = medicamentImageRepository;
     }
 
     @GetMapping(value="/all")
@@ -102,7 +106,7 @@ public class MedicamentController {
 
     @GetMapping(value="byId/{id}")
     public ResponseEntity<Medicament> getMedicamentById(@PathVariable(name="id") int id){
-        Medicament medicament = medicamentRepository.getReferenceById(id);
+        Medicament medicament = medicamentRepository.findById(id).get();
         if (medicament == null)
         {
             return ResponseEntity.notFound().build();
@@ -282,7 +286,7 @@ public class MedicamentController {
         medicamentCountRepository.save(new MedicamentCount("10 мл", medicamentRepository.findByName("Катионорм").get(0)));
 
         //имудон
-        medicamentRepository.save(new Medicament("Имудон", "Смесь лизатов бактерий",
+        Medicament imudon = medicamentRepository.save(new Medicament("Имудон", "Смесь лизатов бактерий",
                 categoryRepository.findByName("Препараты для лечения органов чувств"),
                 manufacturerRepository.findByName("Фармстандарт-Томскхимфарм ОАО"),
                 releaseFormRepository.findByName("Таблетки для рассасывания")
@@ -290,6 +294,8 @@ public class MedicamentController {
         medicamentCountRepository.save(new MedicamentCount("24 шт", medicamentRepository.findByName("Имудон").get(0)));
         medicamentCountRepository.save(new MedicamentCount("40 шт", medicamentRepository.findByName("Имудон").get(0)));
         medicamentDosageRepository.save(new MedicamentDosage("2,7 мг", medicamentRepository.findByName("Имудон").get(0)));
+
+        medicamentImageRepository.save(new MedicamentImage(1, "imudon.png", imudon));
 
         //акридерм гк
         medicamentRepository.save(new Medicament("Акридерм ГК", "Бетаметазон",
@@ -845,18 +851,76 @@ public class MedicamentController {
                 medicamentDosageRepository.findByMedicamentAndDosage(medicamentRepository.findByName("Левомицетин Реневал").get(0), "3%").get(0),
                 pharmacyAddressRepository.findByAddress("ул. Полевая, 86А").get(0)));
 
-/*
-        //аспаркам
-        medicamentRepository.save(new Medicament("Аспаркам", "Калия и магния аспарагинат",
-                categoryRepository.findByName("Препараты для сердечно-сосудистой системы"),
-                manufacturerRepository.findByName("Обновление ПФК  АО"),
-                releaseFormRepository.findByName("Таблетки")
-        ));
-        medicamentCountRepository.save(new MedicamentCount("24 шт", medicamentRepository.findByName("Аспаркам").get(0)));
-        medicamentCountRepository.save(new MedicamentCount("56 шт", medicamentRepository.findByName("Аспаркам").get(0)));
-        medicamentDosageRepository.save(new MedicamentDosage("500 мг", medicamentRepository.findByName("Аспаркам").get(0)));
 
-        //долгит
+        //аспаркам
+        medicamentAvailabilityRepository.save(new MedicamentAvailability(67.99,
+                medicamentCountRepository.findByMedicamentAndCount(medicamentRepository.findByName("Аспаркам").get(0), "24 шт").get(0),
+                medicamentDosageRepository.findByMedicamentAndDosage(medicamentRepository.findByName("Аспаркам").get(0), "500 мг").get(0),
+                pharmacyAddressRepository.findByAddress("ул. Полевая, 86А").get(0)));
+
+        medicamentAvailabilityRepository.save(new MedicamentAvailability(63.45,
+                medicamentCountRepository.findByMedicamentAndCount(medicamentRepository.findByName("Аспаркам").get(0), "24 шт").get(0),
+                medicamentDosageRepository.findByMedicamentAndDosage(medicamentRepository.findByName("Аспаркам").get(0), "500 мг").get(0),
+                pharmacyAddressRepository.findByAddress("ул. Гагарина, 59").get(0)));
+
+        medicamentAvailabilityRepository.save(new MedicamentAvailability(69.65,
+                medicamentCountRepository.findByMedicamentAndCount(medicamentRepository.findByName("Аспаркам").get(0), "24 шт").get(0),
+                medicamentDosageRepository.findByMedicamentAndDosage(medicamentRepository.findByName("Аспаркам").get(0), "500 мг").get(0),
+                pharmacyAddressRepository.findByAddress("ул. Стара Загора, 85").get(0)));
+
+        medicamentAvailabilityRepository.save(new MedicamentAvailability(71.13,
+                medicamentCountRepository.findByMedicamentAndCount(medicamentRepository.findByName("Аспаркам").get(0), "24 шт").get(0),
+                medicamentDosageRepository.findByMedicamentAndDosage(medicamentRepository.findByName("Аспаркам").get(0), "500 мг").get(0),
+                pharmacyAddressRepository.findByAddress("ул. Ново-Вокзальная, 146А").get(0)));
+
+        medicamentAvailabilityRepository.save(new MedicamentAvailability(67.45,
+                medicamentCountRepository.findByMedicamentAndCount(medicamentRepository.findByName("Аспаркам").get(0), "24 шт").get(0),
+                medicamentDosageRepository.findByMedicamentAndDosage(medicamentRepository.findByName("Аспаркам").get(0), "500 мг").get(0),
+                pharmacyAddressRepository.findByAddress("ул. Куйбышева, 110").get(0)));
+
+        medicamentAvailabilityRepository.save(new MedicamentAvailability(67.99,
+                medicamentCountRepository.findByMedicamentAndCount(medicamentRepository.findByName("Аспаркам").get(0), "24 шт").get(0),
+                medicamentDosageRepository.findByMedicamentAndDosage(medicamentRepository.findByName("Аспаркам").get(0), "500 мг").get(0),
+                pharmacyAddressRepository.findByAddress("ул. Полевая, 86А").get(0)));
+
+        medicamentAvailabilityRepository.save(new MedicamentAvailability(149.99,
+                medicamentCountRepository.findByMedicamentAndCount(medicamentRepository.findByName("Аспаркам").get(0), "56 шт").get(0),
+                medicamentDosageRepository.findByMedicamentAndDosage(medicamentRepository.findByName("Аспаркам").get(0), "500 мг").get(0),
+                pharmacyAddressRepository.findByAddress("ул. Гагарина, 59").get(0)));
+
+        medicamentAvailabilityRepository.save(new MedicamentAvailability(152.0,
+                medicamentCountRepository.findByMedicamentAndCount(medicamentRepository.findByName("Аспаркам").get(0), "56 шт").get(0),
+                medicamentDosageRepository.findByMedicamentAndDosage(medicamentRepository.findByName("Аспаркам").get(0), "500 мг").get(0),
+                pharmacyAddressRepository.findByAddress("ул. Стара Загора, 85").get(0)));
+
+        medicamentAvailabilityRepository.save(new MedicamentAvailability(147.67,
+                medicamentCountRepository.findByMedicamentAndCount(medicamentRepository.findByName("Аспаркам").get(0), "56 шт").get(0),
+                medicamentDosageRepository.findByMedicamentAndDosage(medicamentRepository.findByName("Аспаркам").get(0), "500 мг").get(0),
+                pharmacyAddressRepository.findByAddress("ул. Ново-Вокзальная, 146А").get(0)));
+
+        medicamentAvailabilityRepository.save(new MedicamentAvailability(139.09,
+                medicamentCountRepository.findByMedicamentAndCount(medicamentRepository.findByName("Аспаркам").get(0), "56 шт").get(0),
+                medicamentDosageRepository.findByMedicamentAndDosage(medicamentRepository.findByName("Аспаркам").get(0), "500 мг").get(0),
+                pharmacyAddressRepository.findByAddress("ул. Куйбышева, 110").get(0)));
+
+
+        //тамсулозин реневал
+        medicamentAvailabilityRepository.save(new MedicamentAvailability(401.0,
+                medicamentCountRepository.findByMedicamentAndCount(medicamentRepository.findByName("Тамсулозин Реневал").get(0), "30 шт").get(0),
+                medicamentDosageRepository.findByMedicamentAndDosage(medicamentRepository.findByName("Тамсулозин Реневал").get(0), "400 мг").get(0),
+                pharmacyAddressRepository.findByAddress("ул. Куйбышева, 110").get(0)));
+
+        medicamentAvailabilityRepository.save(new MedicamentAvailability(421.0,
+                medicamentCountRepository.findByMedicamentAndCount(medicamentRepository.findByName("Тамсулозин Реневал").get(0), "30 шт").get(0),
+                medicamentDosageRepository.findByMedicamentAndDosage(medicamentRepository.findByName("Тамсулозин Реневал").get(0), "400 мг").get(0),
+                pharmacyAddressRepository.findByAddress("ул. Стара Загора, 85").get(0)));
+
+        medicamentAvailabilityRepository.save(new MedicamentAvailability(975.96,
+                medicamentCountRepository.findByMedicamentAndCount(medicamentRepository.findByName("Тамсулозин Реневал").get(0), "90 шт").get(0),
+                medicamentDosageRepository.findByMedicamentAndDosage(medicamentRepository.findByName("Тамсулозин Реневал").get(0), "400 мг").get(0),
+                pharmacyAddressRepository.findByAddress("ул. Стара Загора, 85").get(0)));
+
+/*      //долгит
         medicamentRepository.save(new Medicament("Долгит", "Ибупрофен",
                 categoryRepository.findByName("Препараты для лечения костно-мыщечной системы"),
                 manufacturerRepository.findByName("Пфайзер Фармасьютикалз ЭлЭлСи"),
@@ -865,17 +929,6 @@ public class MedicamentController {
         medicamentCountRepository.save(new MedicamentCount("50 гр", medicamentRepository.findByName("Долгит").get(0)));
         medicamentCountRepository.save(new MedicamentCount("100 гр", medicamentRepository.findByName("Долгит").get(0)));
         medicamentDosageRepository.save(new MedicamentDosage("5%", medicamentRepository.findByName("Долгит").get(0)));
-
-        //тамсулозин реневал
-        medicamentRepository.save(new Medicament("Тамсулозин Реневал", "Тамсулозин",
-                categoryRepository.findByName("Препараты для мочеполовой системы и половые гормоны"),
-                manufacturerRepository.findByName("Обновление ПФК  АО"),
-                releaseFormRepository.findByName("Капсулы")
-        ));
-        medicamentCountRepository.save(new MedicamentCount("30 шт", medicamentRepository.findByName("Тамсулозин Реневал").get(0)));
-        medicamentCountRepository.save(new MedicamentCount("90 шт", medicamentRepository.findByName("Тамсулозин Реневал").get(0)));
-        medicamentDosageRepository.save(new MedicamentDosage("400 мг", medicamentRepository.findByName("Тамсулозин Реневал").get(0)));
-
 
         //Нейронтин
         medicamentRepository.save(new Medicament("Нейронтин", "Габапентин",
