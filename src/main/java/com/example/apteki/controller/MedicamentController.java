@@ -175,6 +175,7 @@ public class MedicamentController {
 
         MedicamentInfo medicamentInfo = new MedicamentInfo(medicamentCounts, medicamentDosages);
 
+        System.out.println(ImageEncoder.encodeFileToBase64Binary("imudon.png"));
         return new ResponseEntity<>(medicamentInfo, HttpStatus.OK);
     }
 
