@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface MedicamentDosageRepository extends JpaRepository<MedicamentDosage, Integer> {
     List<MedicamentDosage> findByMedicament(Medicament medicament);
+    List<MedicamentDosage> findByMedicamentAndDosage(Medicament medicament, String dosage);
 }
