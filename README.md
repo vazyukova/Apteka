@@ -7,7 +7,7 @@
 spring.datasource.username = postgres
 spring.datasource.password = postgres
 ```
-- Запустить через IDEA (порт по умолчанию 6666)
+- Запустить через IDEA (порт по умолчанию 4000)
 ## Автозаполнение
 Выполнять ресты для автозаполнения нужно в *определенно том порядке*, в котором они здесь перечислены. Удобнее всего через постман      
 **GET */api/medicaments/autocompleteCategories*** - автозаполнение категорий   
