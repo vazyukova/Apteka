@@ -7,6 +7,7 @@
 spring.datasource.username = postgres
 spring.datasource.password = postgres
 ```
+- **Поменять путь до папки static в классе ImageEncoder**
 - Запустить через IDEA (порт по умолчанию 4000)
 ## Автозаполнение
 Выполнять ресты для автозаполнения нужно в *определенно том порядке*, в котором они здесь перечислены. Удобнее всего через постман      
@@ -20,6 +21,41 @@ spring.datasource.password = postgres
 В случае, если ресты для автозаполнения будут меняться, проще всего дропнуть бд и заполнить заново, чтобы все ок сохранилось
 
 ## Документация по Rest API
+### Работа с пользователями
+- **Регистрация**    
+POST */api/user/registration*     
+*Body:*
+```
+{
+    "username": "vazyukova",
+    "email": "gvazyukova@mail.ru",
+    "password": "12345"
+}
+```
+- **Авторизация**    
+POST */api/user/auth*
+```
+{
+    "username": "vazyukova",
+    "password": "12345"
+}
+```
+### Работа с напоминаниями
+- **Создать напоминание**    
+POST */api/remainders/saveRemainder*
+```
+{
+    "startDate":"2022-11-11", //пока что определенно такой формат ГГГГ-ММ-ДД
+    "endDate": "2022-11-24",
+    "count": "2.0",
+    "medicamentId": 55,
+    "username": "vazyukova"
+}
+```
+- **Получить все напоминания пользователя** 
+GET */api/remainders/byUser/vazyukova*
+
+### Работа с лекарствами
 - **Получить список всех категорий**    
 GET */api/medicaments/categories*
 
