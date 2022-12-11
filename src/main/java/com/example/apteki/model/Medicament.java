@@ -18,6 +18,9 @@ public class Medicament {
     @Column(name = "activeSubstance")
     private String activeSubstance;
 
+    @Column(name = "image")
+    private String image;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="category", referencedColumnName = "id")
     Category category;
@@ -30,10 +33,11 @@ public class Medicament {
     @JoinColumn(name="releaseForm", referencedColumnName = "id")
     ReleaseForm releaseForm;
 
-    public Medicament(String name, String activeSubstance, Category category, Manufacturer manufacturer, ReleaseForm releaseForm)
+    public Medicament(String name, String activeSubstance, String image, Category category, Manufacturer manufacturer, ReleaseForm releaseForm)
     {
         this.name = name;
         this.activeSubstance = activeSubstance;
+        this.image = image;
         this.category = category;
         this.manufacturer = manufacturer;
         this.releaseForm = releaseForm;

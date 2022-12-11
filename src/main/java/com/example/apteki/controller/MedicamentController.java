@@ -10,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -111,6 +113,7 @@ public class MedicamentController {
         {
             return ResponseEntity.notFound().build();
         }
+        medicament.setImage(ImageEncoder.encodeFileToBase64Binary(medicament.getImage()));
         return new ResponseEntity<>(medicament, HttpStatus.OK);
     }
 
@@ -189,6 +192,20 @@ public class MedicamentController {
         );
 
         return new ResponseEntity<>(medicamentAvailabilities, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getAllMedicamentAvailabilities/{medicamentId}")
+    public ResponseEntity<List<MedicamentAvailability>> getAllMedicamentAvailabilities(@PathVariable(name="medicamentId") int medicamentId)
+    {
+        Medicament medicament = medicamentRepository.findById(medicamentId).get();
+        List<MedicamentCount> medicamentCounts = medicamentCountRepository.findByMedicament(medicament);
+        List<MedicamentDosage> medicamentDosages = medicamentDosageRepository.findByMedicament(medicament);
+
+        Set<MedicamentAvailability> medicamentAvailabilities = new HashSet<>();
+        medicamentCounts.forEach(x -> medicamentAvailabilities.addAll(medicamentAvailabilityRepository.findByMedicamentCount(x)));
+        medicamentDosages.forEach(x -> medicamentAvailabilities.addAll(medicamentAvailabilityRepository.findByMedicamentDosage(x)));
+
+        return new ResponseEntity<>(new ArrayList<>(medicamentAvailabilities), HttpStatus.OK);
     }
 
     @GetMapping(value = "/autocompleteCategories")
@@ -280,6 +297,7 @@ public class MedicamentController {
     {
         //катионорм
         medicamentRepository.save(new Medicament("Катионорм", "Тилоксапол",
+                "kationorm.png",
                 categoryRepository.findByName("Препараты для лечения органов чувств"),
                 manufacturerRepository.findByName("ЛАБОРАТУАР ФАРМАСТЕР"),
                 releaseFormRepository.findByName("Капли")
@@ -288,6 +306,7 @@ public class MedicamentController {
 
         //имудон
         Medicament imudon = medicamentRepository.save(new Medicament("Имудон", "Смесь лизатов бактерий",
+                "imudon.png",
                 categoryRepository.findByName("Препараты для лечения органов чувств"),
                 manufacturerRepository.findByName("Фармстандарт-Томскхимфарм ОАО"),
                 releaseFormRepository.findByName("Таблетки для рассасывания")
@@ -300,6 +319,7 @@ public class MedicamentController {
 
         //акридерм гк
         medicamentRepository.save(new Medicament("Акридерм ГК", "Бетаметазон",
+                "akriderm.png",
                 categoryRepository.findByName("Дерматологические средства"),
                 manufacturerRepository.findByName("Акрихин ХФК АО"),
                 releaseFormRepository.findByName("Мазь")
@@ -309,6 +329,7 @@ public class MedicamentController {
 
         //комбилипен
         medicamentRepository.save(new Medicament("Комбилипен", "Цианокобаламин",
+                "kombilipen.png",
                 categoryRepository.findByName("Витамины"),
                 manufacturerRepository.findByName("Фармстандарт-Уфимский витаминный завод,ОАО"),
                 releaseFormRepository.findByName("Раствор для в/м введения")
@@ -319,6 +340,7 @@ public class MedicamentController {
 
         //костарокс
         medicamentRepository.save(new Medicament("Костарокс", "Эторикоксиб",
+                "kostaroks.png",
                 categoryRepository.findByName("Препараты для лечения костно-мыщечной системы"),
                 manufacturerRepository.findByName("Салютас Фарма ГмбХ"),
                 releaseFormRepository.findByName("Таблетки")
@@ -332,6 +354,7 @@ public class MedicamentController {
 
         //Глюкофаж
         medicamentRepository.save(new Medicament("Глюкофаж", "Метформин",
+                "glukofazh.png",
                 categoryRepository.findByName("Диабет"),
                 manufacturerRepository.findByName("Мерк Хелскеа КГаА"),
                 releaseFormRepository.findByName("Таблетки")
@@ -343,6 +366,7 @@ public class MedicamentController {
 
         //Дексаметазон
         medicamentRepository.save(new Medicament("Дексаметазон", "Дексаметазон",
+                "deksametazon.png",
                 categoryRepository.findByName("Гормоны для системного применения"),
                 manufacturerRepository.findByName("Эллара ООО"),
                 releaseFormRepository.findByName("Раствор для в/м введения")
@@ -354,6 +378,7 @@ public class MedicamentController {
 
         //Генеролон
         medicamentRepository.save(new Medicament("Генеролон", "Миноксидил",
+                "generolon.png",
                 categoryRepository.findByName("Дерматологические средства"),
                 manufacturerRepository.findByName("БЕЛУПО"),
                 releaseFormRepository.findByName("Спрей")
@@ -365,6 +390,7 @@ public class MedicamentController {
 
         //Прадакса
         medicamentRepository.save(new Medicament("Прадакса", "Дабигатрана этексилат",
+                "pradaksa.png",
                 categoryRepository.findByName("Препараты для кроветворения и крови"),
                 manufacturerRepository.findByName("Берингер Ингельхайм Фарма ГмбХ и Ко.КГ"),
                 releaseFormRepository.findByName("Капсулы")
@@ -378,6 +404,7 @@ public class MedicamentController {
 
         //Левомицетин Реневал
         medicamentRepository.save(new Medicament("Левомицетин Реневал", "Хлорамфеникол",
+                "levomicetin.png",
                 categoryRepository.findByName("Препараты для лечения органов чувств"),
                 manufacturerRepository.findByName("Обновление ПФК  АО"),
                 releaseFormRepository.findByName("Раствор для нар. применения")
@@ -388,6 +415,7 @@ public class MedicamentController {
 
         //аспаркам
         medicamentRepository.save(new Medicament("Аспаркам", "Калия и магния аспарагинат",
+                "asparkam.png",
                 categoryRepository.findByName("Препараты для сердечно-сосудистой системы"),
                 manufacturerRepository.findByName("Обновление ПФК  АО"),
                 releaseFormRepository.findByName("Таблетки")
@@ -398,6 +426,7 @@ public class MedicamentController {
 
         //долгит
         medicamentRepository.save(new Medicament("Долгит", "Ибупрофен",
+                "dolgit.png",
                 categoryRepository.findByName("Препараты для лечения костно-мыщечной системы"),
                 manufacturerRepository.findByName("Пфайзер Фармасьютикалз ЭлЭлСи"),
                 releaseFormRepository.findByName("Крем")
@@ -408,6 +437,7 @@ public class MedicamentController {
 
         //тамсулозин реневал
         medicamentRepository.save(new Medicament("Тамсулозин Реневал", "Тамсулозин",
+                "tamsulozin.png",
                 categoryRepository.findByName("Препараты для мочеполовой системы и половые гормоны"),
                 manufacturerRepository.findByName("Обновление ПФК  АО"),
                 releaseFormRepository.findByName("Капсулы")
@@ -419,6 +449,7 @@ public class MedicamentController {
 
         //Нейронтин
         medicamentRepository.save(new Medicament("Нейронтин", "Габапентин",
+                "neirontin.png",
                 categoryRepository.findByName("Препараты для нервной системы"),
                 manufacturerRepository.findByName("Пфайзер Фармасьютикалз ЭлЭлСи"),
                 releaseFormRepository.findByName("Таблетки")
@@ -429,6 +460,7 @@ public class MedicamentController {
 
         //смекта
         medicamentRepository.save(new Medicament("Смекта", "Смектит диоктаэдрический",
+                "smekta.png",
                 categoryRepository.findByName("Препараты для пищеварительного тракта и обмена веществ"),
                 manufacturerRepository.findByName("Бофур Ипсен Индастри"),
                 releaseFormRepository.findByName("Порошок")
@@ -439,6 +471,7 @@ public class MedicamentController {
 
         //арбидол
         medicamentRepository.save(new Medicament("Арбидол", "Умифеновир",
+                "arbidol.png",
                 categoryRepository.findByName("Профилактика ОРВИ и гриппа"),
                 manufacturerRepository.findByName("Фармстандарт-Лексредства ОАО"),
                 releaseFormRepository.findByName("Порошок")
@@ -448,6 +481,7 @@ public class MedicamentController {
 
         //Гиотриф
         medicamentRepository.save(new Medicament("Гиотриф", "Афатиниб",
+                "giotrif.png",
                 categoryRepository.findByName("Противоопухолевые препараты и иммуномодуляторы"),
                 manufacturerRepository.findByName("Берингер Ингельхайм Фарма ГмбХ и Ко.КГ"),
                 releaseFormRepository.findByName("Таблетки")
@@ -459,6 +493,7 @@ public class MedicamentController {
 
         //Чемеричная вода
         medicamentRepository.save(new Medicament("Черемичная вода", "Чемерицы настойка",
+                "cheremichnaya_voda.png",
                 categoryRepository.findByName("Противопаразитарные препараты"),
                 manufacturerRepository.findByName("ТВЕРСКАЯ ФАРМАЦЕВТИЧЕСКАЯ ФАБРИКА ОАО"),
                 releaseFormRepository.findByName("Раствор для нар. применения")
@@ -468,6 +503,7 @@ public class MedicamentController {
 
         //Нош-па
         medicamentRepository.save(new Medicament("Нош-па", "Дротаверин",
+                "noshpa.png",
                 categoryRepository.findByName("Препараты для пищеварительного тракта и обмена веществ"),
                 manufacturerRepository.findByName("Опелла Хелскеа Венгрия Лтд."),
                 releaseFormRepository.findByName("Таблетки")
@@ -478,6 +514,7 @@ public class MedicamentController {
 
         //Витамин С
         medicamentRepository.save(new Medicament("Витамин C", "Витамин C",
+                "vitaminC.png",
                 categoryRepository.findByName("Витамины"),
                 manufacturerRepository.findByName("Эвалар"),
                 releaseFormRepository.findByName("Таблетки шипучие")
@@ -490,6 +527,7 @@ public class MedicamentController {
 
         //Ринсулин НПХ
         medicamentRepository.save(new Medicament("Ринсулин НПХ", "Инсулин-изофан человеческий генно-инженерный",
+                "rinsulin.png",
                 categoryRepository.findByName("Диабет"),
                 manufacturerRepository.findByName("ГЕРОФАРМ"),
                 releaseFormRepository.findByName("Суспензия для п/к введения")
@@ -499,6 +537,7 @@ public class MedicamentController {
 
         //Буденофальк
         medicamentRepository.save(new Medicament("Буденофальк", "Будесонид",
+                "budenofalk.png",
                 categoryRepository.findByName("Гормоны для системного применения"),
                 manufacturerRepository.findByName("Лозан Фарма"),
                 releaseFormRepository.findByName("Капсулы")
@@ -508,6 +547,7 @@ public class MedicamentController {
 
         //Надропарин кальция
         medicamentRepository.save(new Medicament("Надропарин кальция", "Надропарин кальция",
+                "nadroparin.png",
                 categoryRepository.findByName("Препараты для кроветворения и крови"),
                 manufacturerRepository.findByName("Московский эндокринный завод"),
                 releaseFormRepository.findByName("Раствор для в/м введения")
@@ -519,6 +559,7 @@ public class MedicamentController {
 
         //Лозартан
         medicamentRepository.save(new Medicament("Лозартан", "Лозартан",
+                "lozartan.png",
                 categoryRepository.findByName("Препараты для сердечно-сосудистой системы"),
                 manufacturerRepository.findByName("Пранафарм ООО"),
                 releaseFormRepository.findByName("Таблетки")
@@ -532,6 +573,7 @@ public class MedicamentController {
 
         //Дюфастон
         medicamentRepository.save(new Medicament("Дюфастон", "Дидрогестерон",
+                "dufaston.png",
                 categoryRepository.findByName("Препараты для мочеполовой системы и половые гормоны"),
                 manufacturerRepository.findByName("Пранафарм ООО"),
                 releaseFormRepository.findByName("Таблетки")
@@ -542,6 +584,7 @@ public class MedicamentController {
 
         //Итулси
         medicamentRepository.save(new Medicament("Итулси", "Палбоциклиб",
+                "itulsi.png",
                 categoryRepository.findByName("Противоопухолевые препараты и иммуномодуляторы"),
                 manufacturerRepository.findByName("Пфайзер Фармасьютикалз ЭлЭлСи"),
                 releaseFormRepository.findByName("Капсулы")
@@ -552,6 +595,7 @@ public class MedicamentController {
 
         //Немозол
         medicamentRepository.save(new Medicament("Немозол", "Албендазол",
+                "nemozol.png",
                 categoryRepository.findByName("Противопаразитарные препараты"),
                 manufacturerRepository.findByName("Ипка Лабораториз Лимитед"),
                 releaseFormRepository.findByName("Суспензия для приема внутрь")
@@ -1080,6 +1124,7 @@ public class MedicamentController {
 
     private SearchResponse convertMedicamentToSearchResponse(Medicament medicament)
     {
+        medicament.setImage(ImageEncoder.encodeFileToBase64Binary(medicament.getImage()));
         List<MedicamentCount> medicamentCounts = medicamentCountRepository.findByMedicament(medicament);
         List<MedicamentDosage> medicamentDosages = medicamentDosageRepository.findByMedicament(medicament);
         Set<MedicamentAvailability> availabilities = new HashSet<>();
