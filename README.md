@@ -40,6 +40,20 @@ POST */api/user/auth*
     "password": "12345"
 }
 ```
+### Работа с напоминаниями
+- **Создать напоминание**    
+POST */api/remainders/saveRemainder*
+```
+{
+    "startDate":"2022-11-11", //пока что определенно такой формат ГГГГ-ММ-ДД
+    "endDate": "2022-11-24",
+    "count": "2.0",
+    "medicamentId": 55,
+    "username": "vazyukova"
+}
+```
+- **Получить все напоминания пользователя** 
+GET */api/remainders/byUser/vazyukova*
 
 ### Работа с лекарствами
 - **Получить список всех категорий**    
