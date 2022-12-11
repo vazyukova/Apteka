@@ -20,6 +20,28 @@ spring.datasource.password = postgres
 В случае, если ресты для автозаполнения будут меняться, проще всего дропнуть бд и заполнить заново, чтобы все ок сохранилось
 
 ## Документация по Rest API
+### Работа с пользователями
+- **Регистрация**    
+POST */api/user/registration*     
+*Body:*
+```
+{
+    "username": "vazyukova",
+    "email": "gvazyukova@mail.ru",
+    "password": "12345"
+}
+```
+- **Авторизация**    
+POST */api/user/auth*
+```
+{
+    "username": "vazyukova",
+    "email": "gvazyukova@mail.ru",
+    "password": "12345"
+}
+```
+
+### Работа с лекарствами
 - **Получить список всех категорий**    
 GET */api/medicaments/categories*
 
