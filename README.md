@@ -37,7 +37,6 @@ POST */api/user/auth*
 ```
 {
     "username": "vazyukova",
-    "email": "gvazyukova@mail.ru",
     "password": "12345"
 }
 ```
