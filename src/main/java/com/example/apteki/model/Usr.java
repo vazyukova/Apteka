@@ -15,7 +15,6 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @Entity
 public class Usr implements UserDetails {
     @SequenceGenerator(
@@ -44,6 +43,8 @@ public class Usr implements UserDetails {
         this.email = email;
         this.password = password;
     }
+
+    public Usr(){}
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
