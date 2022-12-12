@@ -47,13 +47,29 @@ POST */api/remainders/saveRemainder*
 {
     "startDate":"2022-11-11", //пока что определенно такой формат ГГГГ-ММ-ДД
     "endDate": "2022-11-24",
+    "time": "13:35",
+    "count": "2.0",
+    "medicamentId": 55,
+    "username": "vazyukova"
+}
+```
+- **Редактировать напоминание**    
+POST */api/remainders/editRemainder*
+```
+{
+    "startDate":"2022-11-11", //пока что определенно такой формат ГГГГ-ММ-ДД
+    "endDate": "2022-11-24",
+    "time": "13:35",
     "count": "2.0",
     "medicamentId": 55,
     "username": "vazyukova"
 }
 ```
 - **Получить все напоминания пользователя** 
-GET */api/remainders/byUser/vazyukova*
+GET */api/remainders/byUser/{username}*
+
+- **Удалить напоминание** 
+DELETE */api/remainders/deleteRemainder/{id}*
 
 ### Работа с лекарствами
 - **Получить список всех категорий**    
@@ -127,7 +143,10 @@ GET */api/medicaments/medicamentInfo/{id}*
 При клике на определенную пару количество - дозировка внизу должна выводиться табличка с наличием в аптеках (запрос для этого ниже)     
 
 - **Получить информацию о наличии лекарства в аптеках по Id медикамента**    
-GET */api/medicaments/medicamentAvailabilities/?medicamentCountId=777&medicamentDosageId=888*     
+GET */api/medicaments/medicamentAvailabilities/?medicamentCountId=777&medicamentDosageId=888*   
+
+- **Получить все наличия в аптеках**    
+GET */api/medicaments/getAllMedicamentAvailabilities/{medicamentId}*
 
 Пока все :)      
 ## Полный список лекарств, которые есть в бд
