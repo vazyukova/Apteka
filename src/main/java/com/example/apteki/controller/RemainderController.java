@@ -11,7 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.sql.Time;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/remainders")
@@ -37,16 +40,47 @@ public class RemainderController {
     }
 
     @PostMapping("/saveRemainder")
-    public ResponseEntity<List<Remainder>> saveRemainder(@RequestBody RemainderRequest remainder)
+    public ResponseEntity<Remainder> saveRemainder(@RequestBody RemainderRequest remainder)
     {
         System.out.println(remainder.getStartDate() + " " + remainder.getEndDate());
         Remainder newRemainder = remainderRepository.save(new Remainder(
                 Date.valueOf(remainder.getStartDate()),
                 Date.valueOf(remainder.getEndDate()),
+                Time.valueOf(LocalTime.parse(remainder.getTime())),
                 remainder.getCount(),
                 medicamentRepository.findById(remainder.getMedicamentId()).get(),
                 userRepository.findByUsername(remainder.getUsername()).get()
         ));
-        return getRemainderByUser(newRemainder.getUsr().getUsername());
+        return new ResponseEntity<>(newRemainder, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deleteRemainder/{id}")
+    public ResponseEntity<List<Remainder>> deleteRemainder(@PathVariable(name="id") int id){
+        Optional<Remainder> remainderOptional = remainderRepository.findById(id);
+        if (remainderOptional.isPresent())
+        {
+            remainderRepository.delete(remainderOptional.get());
+            return getRemainderByUser(remainderOptional.get().getUsr().getUsername());
+        }
+        else
+        {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/editRemainder")
+    public ResponseEntity<Remainder> editRemainder(@RequestBody RemainderRequest remainder)
+    {
+        Remainder newRemainder = remainderRepository.findById(remainder.getId()).get();
+        newRemainder.setStartDate(Date.valueOf(remainder.getStartDate()));
+        newRemainder.setEndDate(Date.valueOf(remainder.getEndDate()));
+        newRemainder.setTime(Time.valueOf(LocalTime.parse(remainder.getTime())));
+        newRemainder.setCount(remainder.getCount());
+        newRemainder.setMedicament(medicamentRepository.findById(remainder.getMedicamentId()).get());
+        newRemainder.setUsr(userRepository.findByUsername(remainder.getUsername()).get());
+
+        newRemainder = remainderRepository.save(newRemainder);
+        return new ResponseEntity<>(newRemainder, HttpStatus.OK);
     }
 }
+
