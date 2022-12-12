@@ -57,6 +57,7 @@ POST */api/remainders/saveRemainder*
 POST */api/remainders/editRemainder*
 ```
 {
+    "id": 250,
     "startDate":"2022-11-11", //пока что определенно такой формат ГГГГ-ММ-ДД
     "endDate": "2022-11-24",
     "time": "13:35",
